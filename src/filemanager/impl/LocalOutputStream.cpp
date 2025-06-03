@@ -19,8 +19,8 @@ LocalOutputStream::Tell() {
 }
 
 size_t
-LocalOutputStream::Write(void* ptr, size_t size) {
-    stream_.write(static_cast<char*>(ptr), size);
+LocalOutputStream::Write(const void* ptr, size_t size) {
+    stream_.write(static_cast<const char*>(ptr), size);
     return size;
 }
 

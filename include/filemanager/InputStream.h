@@ -29,7 +29,15 @@ public:
     /**
      * @brief get the current position in the stream
      *
-     * @return
+     * @return true if the seek is successful, false otherwise
+     */
+    virtual bool
+    Seek(int64_t offset) = 0;
+
+    /**
+     * @brief get the current position in the stream
+     *
+     * @return the current position in the stream
      */
     virtual size_t
     Tell() = 0;
@@ -37,7 +45,7 @@ public:
     /**
      * @brief check if the end of the stream has been reached
      *
-     * @return
+     * @return true if the end of the stream has been reached, false otherwise
      */
     virtual bool
     Eof() const = 0;
@@ -47,7 +55,7 @@ public:
      *
      * @param ptr
      * @param size
-     * @return
+     * @return the number of bytes read
      */
 
     virtual size_t
@@ -56,8 +64,8 @@ public:
     /**
      * @brief read data from the stream to a object with given type
      *
-     * @param 
-     * @return
+     * @param value
+     * @return the number of bytes read
      */
     template <typename T>
     size_t

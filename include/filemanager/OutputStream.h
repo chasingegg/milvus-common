@@ -35,7 +35,7 @@ public:
      */
 
     virtual size_t
-    Write(void* ptr, size_t size) = 0;
+    Write(const void* ptr, size_t size) = 0;
 
     /**
      * @brief read data from the stream to a object with given type
@@ -49,4 +49,4 @@ public:
         return Write(&value, sizeof(T));
     };
 };
-}  // namespace milvus
+}  // namespace milvu

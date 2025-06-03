@@ -15,7 +15,7 @@ public:
     Tell() override;
 
     size_t
-    Write(void* ptr, size_t size) override;
+    Write(const void* ptr, size_t size) override;
 
     template <typename T>
     size_t

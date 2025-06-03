@@ -17,6 +17,12 @@ LocalInputStream::~LocalInputStream() {
     stream_.close();
 }
 
+bool
+LocalInputStream::Seek(int64_t offset) {
+    stream_.seekg(offset);
+    return true;
+}
+
 size_t
 LocalInputStream::Size() const {
     return size_;

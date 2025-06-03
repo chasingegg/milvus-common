@@ -13,6 +13,9 @@ public:
     size_t
     Size() const override;
 
+    bool
+    Seek(int64_t offset) override;
+
     size_t
     Tell() override;
 
