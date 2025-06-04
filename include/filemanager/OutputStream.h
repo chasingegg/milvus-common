@@ -47,6 +47,6 @@ public:
     size_t
     Write(const T& value) {
         return Write(&value, sizeof(T));
-    };
+    }
 };
-}  // namespace milvu
+}  // namespace milvus

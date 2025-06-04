@@ -71,6 +71,6 @@ public:
     size_t
     Read(T& value) {
         return Read(&value, sizeof(T));
-    };
+    }
 };
 }  // namespace milvus
