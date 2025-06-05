@@ -22,17 +22,51 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(MILVUS_COMMON_WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${MILVUS_COMMON_WORKSPACE}/include)
 
-list( APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/conan )
-include( ${CMAKE_BINARY_DIR}/conan/conanbuildinfo.cmake )
-set( CONAN_DISABLE_CHECK_COMPILER ON )
-conan_basic_setup( KEEP_RPATHS )
+find_package(Boost REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
+
+find_package(OpenMP REQUIRED)
+
+find_package(folly REQUIRED)
+include_directories(${folly_INCLUDE_DIRS})
+
+find_package(nlohmann_json REQUIRED)
+find_package(glog REQUIRED)
+find_package(prometheus-cpp REQUIRED)
+
+if(NOT WITH_CUVS)
+  find_package(fmt REQUIRED)
+endif()
+if(NOT WITH_LIGHT)
+  find_package(opentelemetry-cpp REQUIRED)
+endif()
+
+list(APPEND COMMON_LINKER_LIBS Boost::boost)
+list(APPEND COMMON_LINKER_LIBS faiss)
+list(APPEND COMMON_LINKER_LIBS glog::glog)
+list(APPEND COMMON_LINKER_LIBS nlohmann_json::nlohmann_json)
+list(APPEND COMMON_LINKER_LIBS prometheus-cpp::core prometheus-cpp::push)
+list(APPEND COMMON_LINKER_LIBS fmt::fmt-header-only)
+list(APPEND COMMON_LINKER_LIBS Folly::folly)
+list(APPEND COMMON_LINKER_LIBS atomic)
+if(NOT WITH_LIGHT)
+  list(APPEND COMMON_LINKER_LIBS opentelemetry-cpp::opentelemetry_trace)
+  list(APPEND COMMON_LINKER_LIBS
+       opentelemetry-cpp::opentelemetry_exporter_ostream_span)
+  list(APPEND COMMON_LINKER_LIBS
+       opentelemetry-cpp::opentelemetry_exporter_jaeger_trace)
+  list(APPEND COMMON_LINKER_LIBS
+       opentelemetry-cpp::opentelemetry_exporter_otlp_grpc)
+  list(APPEND COMMON_LINKER_LIBS
+       opentelemetry-cpp::opentelemetry_exporter_otlp_http)
+endif()
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.cc)
 add_library(milvus-common SHARED ${SRC_FILES})
 
-list(APPEND milvus-common_LINKER_LIBS ${CONAN_LIBS})
+list(APPEND milvus-common_LINKER_LIBS ${COMMON_LINKER_LIBS})
 
-target_link_libraries(milvus-common PUBLIC ${milvus-common_LINKER_LIBS})
+target_link_libraries(milvus-common PUBLIC ${COMMON_LINKER_LIBS})
 
 install(TARGETS milvus-common
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})

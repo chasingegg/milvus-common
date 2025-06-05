@@ -16,7 +16,7 @@
 namespace milvus {
 class InputStream {
 public:
-    virtual ~InputStream() = 0;
+    virtual ~InputStream() = default;
 
     /**
      * @brief get the total size of the stream

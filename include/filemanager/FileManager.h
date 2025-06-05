@@ -27,7 +27,7 @@ namespace milvus {
  */
 class FileManager {
  public:
-    virtual ~FileManager() = 0;
+    virtual ~FileManager() = default;
     /**
      * @brief Load a file to the local disk, so we can use stl lib to operate it.
      *

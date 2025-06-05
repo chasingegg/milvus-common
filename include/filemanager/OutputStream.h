@@ -16,7 +16,7 @@
 namespace milvus {
 class OutputStream {
 public:
-    virtual ~OutputStream() = 0;
+    virtual ~OutputStream() = default;
 
     /**
      * @brief get the current position in the stream
