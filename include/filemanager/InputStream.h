@@ -40,7 +40,7 @@ public:
      * @return the current position in the stream
      */
     virtual size_t
-    Tell() = 0;
+    Tell() const = 0;
 
     /**
      * @brief check if the end of the stream has been reached

@@ -17,7 +17,7 @@ public:
     Seek(int64_t offset) override;
 
     size_t
-    Tell() override;
+    Tell() const override;
 
     size_t
     Read(void* ptr, size_t size) override;
@@ -32,7 +32,7 @@ public:
     Eof() const override;
 
 private:
-    std::ifstream stream_;
+    mutable std::ifstream stream_;
     size_t size_;
     std::string filename_;
 };

@@ -14,7 +14,7 @@ LocalOutputStream::~LocalOutputStream() {
 }
 
 size_t
-LocalOutputStream::Tell() {
+LocalOutputStream::Tell() const {
     return stream_.tellp();
 }
 

@@ -22,6 +22,8 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(MILVUS_COMMON_WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${MILVUS_COMMON_WORKSPACE}/include)
 
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/)
+
 find_package(Boost REQUIRED)
 include_directories(${Boost_INCLUDE_DIRS})
 
@@ -42,7 +44,6 @@ if(NOT WITH_LIGHT)
 endif()
 
 list(APPEND COMMON_LINKER_LIBS Boost::boost)
-list(APPEND COMMON_LINKER_LIBS faiss)
 list(APPEND COMMON_LINKER_LIBS glog::glog)
 list(APPEND COMMON_LINKER_LIBS nlohmann_json::nlohmann_json)
 list(APPEND COMMON_LINKER_LIBS prometheus-cpp::core prometheus-cpp::push)

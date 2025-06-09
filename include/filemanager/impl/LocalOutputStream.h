@@ -12,7 +12,7 @@ public:
     ~LocalOutputStream() override;
 
     size_t
-    Tell() override;
+    Tell() const override;
 
     size_t
     Write(const void* ptr, size_t size) override;
@@ -24,7 +24,7 @@ public:
     }
 
 private:
-    std::ofstream stream_;
+    mutable std::ofstream stream_;
     std::string filename_;
 };
 

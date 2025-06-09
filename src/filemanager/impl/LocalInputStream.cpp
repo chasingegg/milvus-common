@@ -29,7 +29,7 @@ LocalInputStream::Size() const {
 }
 
 size_t
-LocalInputStream::Tell()  {
+LocalInputStream::Tell() const {
     return stream_.tellg();
 }
 

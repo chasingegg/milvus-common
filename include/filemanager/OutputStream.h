@@ -24,7 +24,7 @@ public:
      * @return
      */
     virtual size_t
-    Tell() = 0;
+    Tell() const = 0;
 
     /**
      * @brief writes a specified number of bytes from the stream into ptr
