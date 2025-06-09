@@ -38,6 +38,9 @@ class LocalFileManager : public FileManager {
     RemoveFile(const std::string& filename) -> bool override;
 
     auto
+    AddFileMeta(const FileMeta& file_meta) -> bool override;
+
+    auto
     OpenInputStream(const std::string& filename) -> std::shared_ptr<InputStream> override;
 
     auto

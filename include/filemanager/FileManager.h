@@ -20,6 +20,11 @@
 
 namespace milvus {
 
+struct FileMeta {
+    std::string file_path;
+    size_t file_size;
+};
+
 /**
  * @brief This FileManager is used to manage file, including its replication, backup, ect.
  * It will act as a cloud-like client, and Knowhere need to call load/add to better support
@@ -45,6 +50,16 @@ class FileManager {
      */
     virtual bool
     AddFile(const std::string& filename) = 0;
+
+    /**
+     * @brief Add file meta to FileManager to manipulate it.
+     *
+     * @param filename
+     * @param size
+     * @return false if any error, or return true.
+     */
+    virtual bool
+    AddFileMeta(const FileMeta& file_meta) = 0;
 
     /**
      * @brief Check if a file exists.
