@@ -22,6 +22,9 @@ public:
     size_t
     Read(void* ptr, size_t size) override;
 
+    size_t
+    ReadAt(void* ptr, size_t offset, size_t size) override;
+
     template <typename T>
     size_t
     Read(T& value) {

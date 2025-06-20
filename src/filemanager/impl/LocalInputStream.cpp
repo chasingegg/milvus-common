@@ -47,4 +47,14 @@ LocalInputStream::Read(void* ptr, size_t size) {
     stream_.read(static_cast<char*>(ptr), size);
     return stream_.gcount();
 }
+
+size_t
+LocalInputStream::ReadAt(void* ptr, size_t offset, size_t size) {
+    if (offset + size > size_) {
+        throw std::runtime_error("Read out of range");
+    }
+    Seek(offset);
+    stream_.read(static_cast<char*>(ptr), size);
+    return stream_.gcount();
+}
 }  // namespace milvus

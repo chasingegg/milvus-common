@@ -62,6 +62,18 @@ public:
     Read(void* ptr, size_t size) = 0;
 
     /**
+     * @brief reads a specified number of bytes from the stream into ptr
+     *
+     * @param ptr
+     * @param offset
+     * @param size
+     * @return the number of bytes read
+     */
+
+    virtual size_t
+    ReadAt(void* ptr, size_t offset, size_t size) = 0;
+
+    /**
      * @brief read data from the stream to a object with given type
      *
      * @param value
