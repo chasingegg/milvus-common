@@ -69,10 +69,10 @@ class ThreadPool {
         if (min_threads_size_ > 16) {
             min_threads_size_ = 16;
         }
-        if (max_threads_size_ > 16) {
-            max_threads_size_ = 16;
-        }
-        LOG_INFO("Init thread pool:{}", name_)
+        // if (max_threads_size_ > 16) {
+            // max_threads_size_ = 16;
+        // }
+        LOG_INFO("FUCK Init thread pool:{}", name_)
             << " with min worker num:" << min_threads_size_
             << " and max worker num:" << max_threads_size_;
         Init();
