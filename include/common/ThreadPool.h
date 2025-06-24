@@ -60,7 +60,7 @@ class ThreadPool {
         : shutdown_(false), name_(std::move(name)) {
         idle_threads_size_ = 0;
         current_threads_size_ = 0;
-        min_threads_size_ = CPU_NUM;
+        min_threads_size_ = CPU_NUM * thread_core_coefficient;
         max_threads_size_ = CPU_NUM * thread_core_coefficient;
 
         // only IO pool will set large limit, but the CPU helps nothing to IO operations,
