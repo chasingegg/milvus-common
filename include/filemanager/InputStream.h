@@ -12,6 +12,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 namespace milvus {
 class InputStream {
@@ -72,6 +73,10 @@ public:
 
     virtual size_t
     ReadAt(void* ptr, size_t offset, size_t size) = 0;
+
+    virtual size_t
+    ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) = 0;
+
 
     /**
      * @brief read data from the stream to a object with given type

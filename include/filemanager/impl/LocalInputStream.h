@@ -25,6 +25,9 @@ public:
     size_t
     ReadAt(void* ptr, size_t offset, size_t size) override;
 
+    size_t
+    ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) override;
+
     template <typename T>
     size_t
     Read(T& value) {

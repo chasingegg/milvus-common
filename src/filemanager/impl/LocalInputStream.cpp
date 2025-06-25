@@ -57,4 +57,9 @@ LocalInputStream::ReadAt(void* ptr, size_t offset, size_t size) {
     stream_.read(static_cast<char*>(ptr), size);
     return stream_.gcount();
 }
+
+size_t
+LocalInputStream::ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) {
+    return 0;
+}
 }  // namespace milvus
