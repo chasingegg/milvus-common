@@ -80,7 +80,7 @@ public:
 
 
     virtual size_t
-    ReadToFileAsync(const std::string& local_file_path, const std::vector<size_t>& ids, const std::function<void(size_t)>& callback) = 0;
+    ReadToFileAsync(const std::string& local_file_path, const std::vector<int64_t>& ids, const std::function<void(int)>& callback) = 0;
 
     /**
      * @brief read data from the stream to a object with given type
