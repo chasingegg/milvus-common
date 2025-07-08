@@ -62,4 +62,9 @@ size_t
 LocalInputStream::ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) {
     return 0;
 }
+
+size_t
+LocalInputStream::ReadToFileAsync(const std::string& local_file_path, const std::vector<size_t>& ids, const std::function<void(size_t)>& callback) {
+    return 0;
+}
 }  // namespace milvus

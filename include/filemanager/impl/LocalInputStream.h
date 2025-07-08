@@ -28,6 +28,9 @@ public:
     size_t
     ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) override;
 
+    size_t
+    ReadToFileAsync(const std::string& local_file_path, const std::vector<size_t>& ids, const std::function<void(size_t)>& callback) override;
+
     template <typename T>
     size_t
     Read(T& value) {

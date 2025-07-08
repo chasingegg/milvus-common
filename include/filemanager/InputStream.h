@@ -13,6 +13,7 @@
 
 #include <string>
 #include <vector>
+#include <functional>
 
 namespace milvus {
 class InputStream {
@@ -77,6 +78,9 @@ public:
     virtual size_t
     ReadAtAsync(std::vector<void*>& data, const std::vector<size_t>& offset, const std::vector<size_t>& size) = 0;
 
+
+    virtual size_t
+    ReadToFileAsync(const std::string& local_file_path, const std::vector<size_t>& ids, const std::function<void(size_t)>& callback) = 0;
 
     /**
      * @brief read data from the stream to a object with given type
