@@ -103,10 +103,11 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
     }
 
     folly::SemiFuture<std::shared_ptr<CellAccessor<CellT>>>
-    PinCells(std::vector<uid_t> uids) {
+    PinCells(std::vector<uid_t> uids, bool need_load = true) {
         return folly::makeSemiFuture().deferValue([this,
                                                    uids = std::vector<uid_t>(
-                                                       uids)](auto&&) {
+                                                       uids),
+                                                       need_load](auto&&) {
             auto count = uids.size();
             std::unordered_set<cid_t> involved_cids;
             involved_cids.reserve(count);
@@ -150,7 +151,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
                     auto cid = *it++;
                     return std::make_pair(cid, false);
                 },
-                reserve_size);
+                reserve_size, need_load);
         });
     }
 
@@ -202,7 +203,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
 
     template <typename Fn>
     folly::SemiFuture<std::shared_ptr<CellAccessor<CellT>>>
-    PinInternal(Fn&& cid_iterator, size_t reserve_size) {
+    PinInternal(Fn&& cid_iterator, size_t reserve_size, bool need_load_out = true) {
         std::vector<folly::SemiFuture<internal::ListNode::NodePin>> futures;
         std::unordered_set<cid_t> need_load_cids;
         futures.reserve(reserve_size);
@@ -211,9 +212,9 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
         while (!end) {
             auto [need_load, future] = cells_[cid].pin();
             futures.push_back(std::move(future));
-            // if (need_load) {
+            if (need_load || !need_load_out) {
                 need_load_cids.insert(cid);
-            // }
+            }
             std::tie(cid, end) = cid_iterator();
         }
         auto load_future = folly::makeSemiFuture();
