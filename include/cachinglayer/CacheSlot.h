@@ -211,9 +211,9 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
         while (!end) {
             auto [need_load, future] = cells_[cid].pin();
             futures.push_back(std::move(future));
-            if (need_load) {
+            // if (need_load) {
                 need_load_cids.insert(cid);
-            }
+            // }
             std::tie(cid, end) = cid_iterator();
         }
         auto load_future = folly::makeSemiFuture();
