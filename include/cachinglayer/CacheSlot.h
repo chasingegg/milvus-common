@@ -19,7 +19,7 @@
 #include <type_traits>
 #include <utility>
 #include <vector>
-
+#include <iostream>
 #include <flat_hash_map/flat_hash_map.hpp>
 #include <folly/futures/Future.h>
 #include <folly/futures/SharedPromise.h>
@@ -263,7 +263,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
                         translator_->key(),
                         fmt::join(cids_vec, ","),
                         resource_needed.ToString());
-                    LOG_ERROR(error_msg);
+                    std::cout << error_msg << std::endl;
                     reserve_resource_failure = true;
                     ThrowInfo(ErrorCode::InsufficientResource, error_msg);
                 }
