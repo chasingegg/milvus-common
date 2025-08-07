@@ -82,6 +82,10 @@ endif()
 # list(APPEND milvus-common_LINKER_LIBS ${COMMON_LINKER_LIBS})
 
 target_link_libraries(milvus-common PUBLIC ${COMMON_LINKER_LIBS})
+target_compile_definitions(milvus-common PRIVATE
+    FMT_CONSTEXPR=
+    FMT_CONSTEXPR_DECL=
+)
 
 add_subdirectory(test)
 
