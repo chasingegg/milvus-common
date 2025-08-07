@@ -87,8 +87,6 @@ target_compile_definitions(milvus-common PRIVATE
     FMT_CONSTEXPR_DECL=
 )
 
-add_subdirectory(test)
-
 install(TARGETS milvus-common
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
 
