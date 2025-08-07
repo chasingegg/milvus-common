@@ -78,19 +78,19 @@
 // avoid evaluating args if trace log is not enabled
 #define LOG_TRACE(args...)                                               \
     if (VLOG_IS_ON(GLOG_TRACE)) {                                        \
-        VLOG(GLOG_TRACE) << SERVER_MODULE_FUNCTION << fmt::string_view(args); \
+        VLOG(GLOG_TRACE) << SERVER_MODULE_FUNCTION << fmt::format(args); \
     }
 
 #define LOG_DEBUG(args...) \
-    VLOG(GLOG_DEBUG) << SERVER_MODULE_FUNCTION << fmt::string_view(args)
+    VLOG(GLOG_DEBUG) << SERVER_MODULE_FUNCTION << fmt::format(args)
 #define LOG_INFO(args...) \
-    LOG(INFO) << SERVER_MODULE_FUNCTION << fmt::string_view(args)
+    LOG(INFO) << SERVER_MODULE_FUNCTION << fmt::format(args)
 #define LOG_WARN(args...) \
-    LOG(WARNING) << SERVER_MODULE_FUNCTION << fmt::string_view(args)
+    LOG(WARNING) << SERVER_MODULE_FUNCTION << fmt::format(args)
 #define LOG_ERROR(args...) \
-    LOG(ERROR) << SERVER_MODULE_FUNCTION << fmt::string_view(args)
+    LOG(ERROR) << SERVER_MODULE_FUNCTION << fmt::format(args)
 #define LOG_FATAL(args...) \
-    LOG(FATAL) << SERVER_MODULE_FUNCTION << fmt::string_view(args)
+    LOG(FATAL) << SERVER_MODULE_FUNCTION << fmt::format(args)
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
