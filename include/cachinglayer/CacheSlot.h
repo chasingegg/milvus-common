@@ -265,7 +265,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
                         resource_needed.ToString());
                     std::cout << error_msg << std::endl;
                     reserve_resource_failure = true;
-                    ThrowInfo(ErrorCode::InsufficientResource, error_msg);
+                    ThrowInfo(ErrorCode::InsufficientResource, "error_msg");
                 }
             }
 
