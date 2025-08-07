@@ -23,7 +23,9 @@ set(MILVUS_COMMON_WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${MILVUS_COMMON_WORKSPACE}/include)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/conan)
-
+include( ${CMAKE_BINARY_DIR}/conan/conanbuildinfo.cmake )
+set( CONAN_DISABLE_CHECK_COMPILER ON )
+conan_basic_setup( KEEP_RPATHS )
 # find_package(Boost REQUIRED)
 # include_directories(${Boost_INCLUDE_DIRS})
 
@@ -34,6 +36,7 @@ include_directories(${folly_INCLUDE_DIRS})
 
 find_package(nlohmann_json REQUIRED)
 find_package(glog REQUIRED)
+find_package(gflags REQUIRED)
 find_package(prometheus-cpp REQUIRED)
 
 # Option to enable Jaeger support
@@ -49,6 +52,7 @@ endif()
 # list(APPEND COMMON_LINKER_LIBS Boost::boost)
 list(APPEND COMMON_LINKER_LIBS glog::glog)
 list(APPEND COMMON_LINKER_LIBS nlohmann_json::nlohmann_json)
+list(APPEND COMMON_LINKER_LIBS gflags::gflags)
 list(APPEND COMMON_LINKER_LIBS prometheus-cpp::core prometheus-cpp::push)
 list(APPEND COMMON_LINKER_LIBS fmt::fmt-header-only)
 list(APPEND COMMON_LINKER_LIBS Folly::folly)
@@ -75,9 +79,11 @@ if(WITH_JAEGER)
   target_compile_definitions(milvus-common PRIVATE WITH_JAEGER=1)
 endif()
 
-list(APPEND milvus-common_LINKER_LIBS ${COMMON_LINKER_LIBS})
+# list(APPEND milvus-common_LINKER_LIBS ${COMMON_LINKER_LIBS})
 
 target_link_libraries(milvus-common PUBLIC ${COMMON_LINKER_LIBS})
+
+add_subdirectory(test)
 
 install(TARGETS milvus-common
         DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
