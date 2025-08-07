@@ -22,10 +22,10 @@ set( CMAKE_EXPORT_COMPILE_COMMANDS ON )
 set(MILVUS_COMMON_WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${MILVUS_COMMON_WORKSPACE}/include)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/)
+list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/conan)
 
-find_package(Boost REQUIRED)
-include_directories(${Boost_INCLUDE_DIRS})
+# find_package(Boost REQUIRED)
+# include_directories(${Boost_INCLUDE_DIRS})
 
 find_package(OpenMP REQUIRED)
 
@@ -36,6 +36,9 @@ find_package(nlohmann_json REQUIRED)
 find_package(glog REQUIRED)
 find_package(prometheus-cpp REQUIRED)
 
+# Option to enable Jaeger support
+option(WITH_JAEGER "Enable Jaeger tracing support" ON)
+
 if(NOT WITH_CUVS)
   find_package(fmt REQUIRED)
 endif()
@@ -43,7 +46,7 @@ if(NOT WITH_LIGHT)
   find_package(opentelemetry-cpp REQUIRED)
 endif()
 
-list(APPEND COMMON_LINKER_LIBS Boost::boost)
+# list(APPEND COMMON_LINKER_LIBS Boost::boost)
 list(APPEND COMMON_LINKER_LIBS glog::glog)
 list(APPEND COMMON_LINKER_LIBS nlohmann_json::nlohmann_json)
 list(APPEND COMMON_LINKER_LIBS prometheus-cpp::core prometheus-cpp::push)
@@ -54,8 +57,10 @@ if(NOT WITH_LIGHT)
   list(APPEND COMMON_LINKER_LIBS opentelemetry-cpp::opentelemetry_trace)
   list(APPEND COMMON_LINKER_LIBS
        opentelemetry-cpp::opentelemetry_exporter_ostream_span)
-  list(APPEND COMMON_LINKER_LIBS
-       opentelemetry-cpp::opentelemetry_exporter_jaeger_trace)
+  if(WITH_JAEGER)
+    list(APPEND COMMON_LINKER_LIBS
+         opentelemetry-cpp::opentelemetry_exporter_jaeger_trace)
+  endif()
   list(APPEND COMMON_LINKER_LIBS
        opentelemetry-cpp::opentelemetry_exporter_otlp_grpc)
   list(APPEND COMMON_LINKER_LIBS
@@ -64,6 +69,11 @@ endif()
 
 file(GLOB_RECURSE SRC_FILES src/*.cpp src/*.cc)
 add_library(milvus-common SHARED ${SRC_FILES})
+
+# Define compile-time macros
+if(WITH_JAEGER)
+  target_compile_definitions(milvus-common PRIVATE WITH_JAEGER=1)
+endif()
 
 list(APPEND milvus-common_LINKER_LIBS ${COMMON_LINKER_LIBS})
 
