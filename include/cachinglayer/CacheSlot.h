@@ -354,6 +354,10 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
                         .count();
                 internal::cache_item_lifetime_seconds(storage_type)
                     .Observe(seconds);
+                LOG_INFO("[MCL] CacheSlot Cell {} unloaded, life_time: {} sec, size: {}",
+                         key(),
+                         seconds,
+                         size_.ToString());
                 cell_ = nullptr;
                 milvus::monitor::internal_cache_used_bytes_memory.Decrement(
                     size_.memory_bytes);
