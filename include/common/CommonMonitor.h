@@ -15,8 +15,7 @@
 #include <atomic>
 namespace milvus::monitor {
 
-extern std::atomic<int64_t> cache_hit_count = 0;
-extern std::atomic<int64_t> cache_miss_count = 0;
+
 
 // --- caching layer metrics ---
 DECLARE_PROMETHEUS_GAUGE_FAMILY(internal_cache_slot_count);

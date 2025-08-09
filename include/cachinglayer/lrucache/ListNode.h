@@ -23,6 +23,9 @@
 
 namespace milvus::cachinglayer::internal {
 
+extern std::atomic<int64_t> cache_hit_count;
+extern std::atomic<int64_t> cache_miss_count;
+
 class DList;
 
 // ListNode is not movable/copyable.

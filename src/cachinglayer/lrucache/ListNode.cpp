@@ -27,6 +27,9 @@
 
 namespace milvus::cachinglayer::internal {
 
+std::atomic<int64_t> cache_hit_count = 0;
+std::atomic<int64_t> cache_miss_count = 0;
+
 ListNode::NodePin::NodePin(ListNode* node) : node_(node) {
     // The pin_count_ is incremented in ListNode::pin() before this constructor is called.
 }
@@ -101,7 +104,7 @@ ListNode::size() const {
 
 std::pair<bool, folly::SemiFuture<ListNode::NodePin>>
 ListNode::pin() {
-    LOG_INFO("FUCK_MCL_cache hit ratio: {}", milvus::monitor::cache_hit_count.load() * 1.0 / (milvus::monitor::cache_hit_count.load() + milvus::monitor::cache_miss_count.load() + 1));
+    LOG_INFO("FUCK_MCL_cache hit ratio: {}", cache_hit_count.load() * 1.0 / (cache_hit_count.load() + cache_miss_count.load() + 1));
 
     // must be called with lock acquired, and state must not be NOT_LOADED.
     auto read_op = [this]() -> std::pair<bool, folly::SemiFuture<NodePin>> {
@@ -118,11 +121,11 @@ ListNode::pin() {
         if (state_ == State::LOADED) {
             internal::cache_op_result_count_hit(size_.storage_type())
                 .Increment();
-            milvus::monitor::cache_hit_count.fetch_add(1);
+            cache_hit_count.fetch_add(1);
             return std::make_pair(false, std::move(p));
         }
         internal::cache_op_result_count_miss(size_.storage_type()).Increment();
-        milvus::monitor::cache_miss_count.fetch_add(1);
+        cache_miss_count.fetch_add(1);
         return std::make_pair(false,
                               load_promise_->getSemiFuture().deferValue(
                                   [this, p = std::move(p)](auto&&) mutable {
@@ -141,7 +144,7 @@ ListNode::pin() {
     }
     // need to load.
     internal::cache_op_result_count_miss(size_.storage_type()).Increment();
-    milvus::monitor::cache_miss_count.fetch_add(1);
+    cache_miss_count.fetch_add(1);
     load_promise_ = std::make_unique<folly::SharedPromise<folly::Unit>>();
     state_ = State::LOADING;
 
