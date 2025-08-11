@@ -106,9 +106,10 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
     folly::SemiFuture<std::shared_ptr<CellAccessor<CellT>>>
     PinCells(
         const std::vector<uid_t>& uids,
-        std::chrono::milliseconds timeout = std::chrono::milliseconds(100000)) {
+        std::chrono::milliseconds timeout = std::chrono::milliseconds(100000),
+        bool enable_cache = true) {
         return folly::makeSemiFuture().deferValue(
-            [this, uids = std::vector<uid_t>(uids), timeout](
+            [this, uids = std::vector<uid_t>(uids), timeout, enable_cache](
                 auto&&) -> std::shared_ptr<CellAccessor<CellT>> {
                 auto count = std::min(uids.size(), cells_.size());
                 ska::flat_hash_set<cid_t> involved_cids;
@@ -133,7 +134,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
                         }
                     }
                 }
-                return PinInternal(involved_cids, timeout);
+                return PinInternal(involved_cids, timeout, enable_cache);
             });
     }
 
@@ -186,7 +187,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
 
     template <typename CidsT>
     std::shared_ptr<CellAccessor<CellT>>
-    PinInternal(const CidsT& cids, std::chrono::milliseconds timeout) {
+    PinInternal(const CidsT& cids, std::chrono::milliseconds timeout, bool enable_cache) {
         std::vector<folly::SemiFuture<internal::ListNode::NodePin>> futures;
         std::unordered_set<cid_t> need_load_cids;
         futures.reserve(cids.size());
@@ -204,7 +205,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
         for (const auto& cid : cids) {
             auto [need_load, future] = cells_[cid].pin();
             futures.push_back(std::move(future));
-            if (need_load) {
+            if (need_load || !enable_cache) {
                 need_load_cids.insert(cid);
                 resource_needed += cells_[cid].size();
             }
