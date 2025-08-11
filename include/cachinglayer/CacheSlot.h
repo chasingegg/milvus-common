@@ -187,7 +187,7 @@ class CacheSlot final : public std::enable_shared_from_this<CacheSlot<CellT>> {
 
     template <typename CidsT>
     std::shared_ptr<CellAccessor<CellT>>
-    PinInternal(const CidsT& cids, std::chrono::milliseconds timeout, bool enable_cache) {
+    PinInternal(const CidsT& cids, std::chrono::milliseconds timeout, bool enable_cache = true) {
         std::vector<folly::SemiFuture<internal::ListNode::NodePin>> futures;
         std::unordered_set<cid_t> need_load_cids;
         futures.reserve(cids.size());
