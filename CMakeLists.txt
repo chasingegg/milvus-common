@@ -23,11 +23,9 @@ set(MILVUS_COMMON_WORKSPACE ${CMAKE_CURRENT_SOURCE_DIR})
 include_directories(${MILVUS_COMMON_WORKSPACE}/include)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR}/conan)
-include( ${CMAKE_BINARY_DIR}/conan/conanbuildinfo.cmake )
-set( CONAN_DISABLE_CHECK_COMPILER ON )
-conan_basic_setup( KEEP_RPATHS )
-# find_package(Boost REQUIRED)
-# include_directories(${Boost_INCLUDE_DIRS})
+# include( ${CMAKE_BINARY_DIR}/conan/conanbuildinfo.cmake )
+# set( CONAN_DISABLE_CHECK_COMPILER ON )
+# conan_basic_setup( KEEP_RPATHS )
 
 find_package(OpenMP REQUIRED)
 
