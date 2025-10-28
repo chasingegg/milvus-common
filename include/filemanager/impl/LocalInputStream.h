@@ -28,6 +28,9 @@ class LocalInputStream : public InputStream {
     size_t
     ReadAt(void* ptr, size_t offset, size_t size) override;
 
+    folly::SemiFuture<size_t>
+    ReadAtAsync(const std::string& filename, size_t offset, size_t size) override;
+
     template <typename T>
     size_t
     Read(T& value) {

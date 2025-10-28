@@ -11,6 +11,8 @@
 
 #pragma once
 
+#include <folly/futures/Future.h>
+
 #include <string>
 
 namespace milvus {
@@ -73,6 +75,27 @@ class InputStream {
 
     virtual size_t
     ReadAt(void* ptr, size_t offset, size_t size) = 0;
+
+    /**
+     * @brief check if the stream supports asynchronous reading, default is false
+     *
+     * @return true if the stream supports asynchronous reading, false otherwise
+     */
+    virtual bool
+    SupportAsync() const {
+        return false;
+    }
+
+    /**
+     * @brief read a specified number of bytes from the stream asynchronously
+     *
+     * @param filename
+     * @param offset
+     * @param size
+     * @return a future that will be ready when the read is complete
+     */
+    virtual folly::SemiFuture<size_t>
+    ReadAtAsync(const std::string& filename, size_t offset, size_t size) = 0;
 
     /**
      * @brief read data from the stream to a object with given type

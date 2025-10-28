@@ -64,6 +64,11 @@ LocalInputStream::ReadAt(void* ptr, size_t offset, size_t size) {
     return stream_.gcount();
 }
 
+folly::SemiFuture<size_t>
+LocalInputStream::ReadAtAsync(const std::string& filename, size_t offset, size_t size) {
+    throw std::runtime_error("ReadAtAsync is not supported for local file system");
+}
+
 size_t
 LocalInputStream::Read(int fd, size_t size) {
     size_t cur = stream_.tellg();
