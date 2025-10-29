@@ -36,6 +36,8 @@ check_symbol_exists(__x86_64__ "" __X86_64)
 
 find_package(opentelemetry-cpp REQUIRED)
 find_package(folly REQUIRED)
+include_directories(${folly_INCLUDE_DIRS})
+
 find_package(gflags REQUIRED)
 find_package(glog REQUIRED)
 find_package(fmt REQUIRED)
