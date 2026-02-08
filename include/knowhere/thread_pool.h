@@ -12,7 +12,6 @@
 #pragma once
 
 #include <folly/executors/thread_factory/NamedThreadFactory.h>
-#include <omp.h>
 
 #ifdef __linux__
 
@@ -208,28 +207,6 @@ class ThreadPool {
 
     static std::shared_ptr<ThreadPool>
     GetGlobalFetchThreadPool();
-
-    class ScopedBuildOmpSetter {
-        int omp_before;
-#ifdef OPENBLAS_OS_LINUX
-        int blas_thread_before;
-#endif
-     public:
-        explicit ScopedBuildOmpSetter(int num_threads = 0);
-
-        ~ScopedBuildOmpSetter();
-    };
-
-    class ScopedSearchOmpSetter {
-        int omp_before;
-#ifdef OPENBLAS_OS_LINUX
-        int blas_thread_before;
-#endif
-     public:
-        explicit ScopedSearchOmpSetter(int num_threads = 1);
-
-        ~ScopedSearchOmpSetter();
-    };
 
  private:
     folly::CPUThreadPoolExecutor pool_;

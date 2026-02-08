@@ -12,7 +12,6 @@
 add_subdirectory(test_cachinglayer)
 
 find_package(GTest CONFIG REQUIRED)
-find_package(OpenMP REQUIRED)
 find_package(BLAS REQUIRED)
 
 set(ALL_TEST_FILES
@@ -36,10 +35,13 @@ target_link_libraries(all_tests
     GTest::gmock
     milvus-common
     ${COMMON_LINKER_LIBS}
-    pthread
-    atomic
-    gomp
-    openblas
+    Threads::Threads
+    ${BLAS_LIBRARIES}
 )
+if(NOT APPLE)
+    target_link_libraries(all_tests atomic)
+endif()
+
+add_test(NAME all_tests COMMAND all_tests)
 
 install(TARGETS all_tests DESTINATION unittest)

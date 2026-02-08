@@ -25,11 +25,14 @@
 
 #include "log/Log.h"
 #include "nlohmann/json.hpp"
-#include "opentelemetry/exporters/jaeger/jaeger_exporter_factory.h"
 #include "opentelemetry/exporters/ostream/span_exporter_factory.h"
+#ifdef HAVE_OTLP_GRPC_EXPORTER
 #include "opentelemetry/exporters/otlp/otlp_grpc_exporter_factory.h"
+#endif
 #include "opentelemetry/sdk/resource/resource.h"
 #include "opentelemetry/sdk/trace/batch_span_processor_factory.h"
+#include "opentelemetry/sdk/trace/batch_span_processor_options.h"
+#include "opentelemetry/sdk/trace/processor.h"
 #include "opentelemetry/sdk/trace/sampler.h"
 #include "opentelemetry/sdk/trace/samplers/always_on.h"
 #include "opentelemetry/sdk/trace/samplers/parent.h"
@@ -45,7 +48,6 @@ namespace nostd = opentelemetry::nostd;
 
 namespace trace_sdk = opentelemetry::sdk::trace;
 namespace resource = opentelemetry::sdk::resource;
-namespace jaeger = opentelemetry::exporter::jaeger;
 namespace ostream = opentelemetry::exporter::trace;
 namespace otlp = opentelemetry::exporter::otlp;
 
@@ -66,11 +68,14 @@ initTelemetry(const TraceConfig& cfg) {
     if (cfg.exporter == "stdout") {
         exporter = ostream::OStreamSpanExporterFactory::Create();
     } else if (cfg.exporter == "jaeger") {
-        auto opts = jaeger::JaegerExporterOptions{};
-        opts.transport_format = jaeger::TransportFormat::kThriftHttp;
-        opts.endpoint = cfg.jaegerURL;
-        exporter = jaeger::JaegerExporterFactory::Create(opts);
-        LOG_INFO("init jaeger exporter, endpoint: {}", opts.endpoint);
+        auto opts = otlp::OtlpHttpExporterOptions{};
+        if (!cfg.otlpEndpoint.empty()) {
+            opts.url = cfg.otlpEndpoint;
+        } else if (!cfg.jaegerURL.empty()) {
+            opts.url = cfg.jaegerURL;
+        }
+        LOG_INFO("jaeger exporter is deprecated, falling back to otlp http exporter, endpoint: {}", opts.url);
+        exporter = otlp::OtlpHttpExporterFactory::Create(opts);
     } else if (cfg.exporter == "otlp") {
         if (cfg.otlpMethod == "http") {
             auto opts = otlp::OtlpHttpExporterOptions{};
@@ -83,7 +88,9 @@ initTelemetry(const TraceConfig& cfg) {
             }
             exporter = otlp::OtlpHttpExporterFactory::Create(opts);
             LOG_INFO("init otlp http exporter, endpoint: {}", opts.url);
-        } else if (cfg.otlpMethod == "grpc" || cfg.otlpMethod == "") {  // legacy configuration
+        }
+#ifdef HAVE_OTLP_GRPC_EXPORTER
+        else if (cfg.otlpMethod == "grpc" || cfg.otlpMethod == "") {  // legacy configuration
             auto opts = otlp::OtlpGrpcExporterOptions{};
             opts.endpoint = cfg.otlpEndpoint;
             auto headers_map = parseHeaders(cfg.otlpHeaders);
@@ -95,7 +102,9 @@ initTelemetry(const TraceConfig& cfg) {
             opts.use_ssl_credentials = cfg.oltpSecure;
             exporter = otlp::OtlpGrpcExporterFactory::Create(opts);
             LOG_INFO("init otlp grpc exporter, endpoint: {}", opts.endpoint);
-        } else {
+        }
+#endif
+        else {
             LOG_INFO("unknown otlp exporter method: {}", cfg.otlpMethod);
             export_created = false;
         }

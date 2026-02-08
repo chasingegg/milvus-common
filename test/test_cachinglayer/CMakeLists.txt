@@ -11,7 +11,6 @@
 
 
 find_package(GTest CONFIG REQUIRED)
-find_package(OpenMP REQUIRED)
 find_package(BLAS REQUIRED)
 
 set(CACHINGLAYER_TEST_FILES
@@ -35,10 +34,13 @@ target_link_libraries(cachinglayer_test
     GTest::gmock
     milvus-common
     ${COMMON_LINKER_LIBS}
-    pthread
-    atomic
-    gomp
-    openblas
+    Threads::Threads
+    ${BLAS_LIBRARIES}
 )
+if(NOT APPLE)
+    target_link_libraries(cachinglayer_test atomic)
+endif()
+
+add_test(NAME cachinglayer_test COMMAND cachinglayer_test)
 
 install(TARGETS cachinglayer_test DESTINATION unittest)
